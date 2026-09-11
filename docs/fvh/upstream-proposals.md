@@ -338,12 +338,12 @@ gantt
     title Upstream PR Contribution Roadmap
     dateFormat  YYYY-MM-DD
     section Phase 1 (Quick Win)
-    PR 1: Revision Traversal in History API     :active, p1, 2026-03-15, 14d
+    PR 1 - Revision traversal in history API :active, p1, 2026-03-15, 14d
     section Phase 2 (Data & GIS)
-    PR 2: WMS-T View in allu-etl               :p2, after p1, 14d
-    PR 3: Spatio-Temporal API in external-service:p3, after p1, 21d
+    PR 2 - WMS-T view in allu-etl :p2, after p1, 14d
+    PR 3 - Spatio-temporal API in external-service :p3, after p1, 21d
     section Phase 3 (Core Domain)
-    PR 4: Structured Work Journal (Model, UI, PDF):p4, after p2, 35d
+    PR 4 - Structured work journal (model, UI, PDF) :p4, after p2, 35d
 ```
 
 ### Recommended PR Packaging Strategy

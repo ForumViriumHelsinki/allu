@@ -46,11 +46,11 @@ All public traffic routes through HTTPS (port 443). Apache reverse proxies incom
 graph LR
     Client["Client Request<br/>https://allu.kaupunkiymparisto.fi"] --> Apache["Apache 2.4 (VirtualHost 443)<br/>SSL Termination (*.kaupunkiymparisto.fi)"]
 
-    Apache -->|"/"<br/>(SPA fallback)| HTML["Angular 18 SPA<br/>/var/www/html"]
+    Apache -->|"/ — SPA fallback"| HTML["Angular 18 SPA<br/>/var/www/html"]
     Apache -->|"/api/"| UI_API["allu-ui-service<br/>(Port 9000)"]
     Apache -->|"/external/"| EXT_API["external-service<br/>(Port 9040)"]
     Apache -->|"/supervision-api/"| SUP_API["supervision-api<br/>(Port 9050)"]
-    Apache -->|"/wms", "/tms"| MAP["Python MapProxy<br/>WSGI Daemon"]
+    Apache -->|"/wms and /tms"| MAP["Python MapProxy<br/>WSGI Daemon"]
 ```
 
 ### Complete URL Directory
@@ -95,12 +95,12 @@ flowchart TD
     Scheme -->|Port 80| Redir[301 Redirect to HTTPS]
     Scheme -->|Port 443| Match{Request URI Path}
 
-    Match -->|^/api/| P1[ProxyPass -> backend:9000]
-    Match -->|^/external/| P2[ProxyPass -> backend:9040<br/>Set X-Forwarded-Prefix /external/]
-    Match -->|^/supervision-api/| P3[ProxyPass -> backend:9050<br/>Set X-Forwarded-Prefix /supervision-api/]
-    Match -->|^/(wms|tms)/| P4[Python MapProxy WSGI Script]
-    Match -->|Static File / Asset| P5[Serve from /var/www/html]
-    Match -->|Route Path /login, /application/*| P6[Rewrite to /index.html<br/>Angular SPA Routing]
+    Match -->|"^/api/"| P1["ProxyPass to backend:9000"]
+    Match -->|"^/external/"| P2["ProxyPass to backend:9040<br/>Set X-Forwarded-Prefix /external/"]
+    Match -->|"^/supervision-api/"| P3["ProxyPass to backend:9050<br/>Set X-Forwarded-Prefix /supervision-api/"]
+    Match -->|"^/wms or ^/tms"| P4["Python MapProxy WSGI Script"]
+    Match -->|"Static file / asset"| P5["Serve from /var/www/html"]
+    Match -->|"Route path /login, /application/*"| P6["Rewrite to /index.html<br/>Angular SPA Routing"]
 ```
 
 ### Key Proxy Rules
