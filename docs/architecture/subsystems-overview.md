@@ -83,7 +83,7 @@ graph TB
     end
 
     subgraph InternalGIS["Allu Database"]
-        PostGIS[(PostgreSQL 14 + PostGIS)<br/>EPSG:3879 Projection<br/>ST_Intersects / GeometryCollection]
+        PostGIS[("PostgreSQL 14 + PostGIS<br/>EPSG:3879 projection<br/>ST_Intersects / GeometryCollection")]
         ElasticsearchGeo[(Elasticsearch Geo-Shape)]
     end
 
