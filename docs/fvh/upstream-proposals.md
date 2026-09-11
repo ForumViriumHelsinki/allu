@@ -9,9 +9,9 @@ verified_on: 2026-09-11
 
 > **Status: working draft, nothing submitted.** None of this has been raised
 > with the upstream maintainers ([City-of-Helsinki/allu](https://github.com/City-of-Helsinki/allu),
-> developed by Gofore). The intended endpoint is one GitHub issue or discussion
-> per proposal on that repository; this file is where they are drafted, not
-> where they belong permanently. Background on the mechanisms being changed:
+> developed by Gofore). This file is where the proposals are drafted, not where
+> they belong permanently — see §6 for what raising them would actually involve.
+> Background on the mechanisms being changed:
 > [excavation revisions](../domain/excavation-revisions.md) and
 > [API gateways](../architecture/api-gateways.md).
 
@@ -21,20 +21,10 @@ This document details proposed upstream improvements to the Allu platform. These
 
 ## 1. Executive Summary & Impact Matrix
 
-The proposals are organized into four distinct initiatives ranging from low-effort API enhancements to a foundational data model improvement:
-
-```mermaid
-graph TD
-    P1["Proposal 1: Revision Traversal<br/>(external-service & service-core)"]
-    P2["Proposal 2: Spatio-Temporal API<br/>(external-service v2)"]
-    P3["Proposal 3: WMS-T Timeline View<br/>(allu-etl & GeoServer)"]
-    P4["Proposal 4: Structured Work Journal<br/>(model-domain, UI & PDF XSLT)"]
-
-    P1 -.->|Phase 1: Quick Win| Ship1[Immediate PR]
-    P2 -.->|Phase 2: API Feature| Ship2[Next Release]
-    P3 -.->|Phase 2: GIS Enablement| Ship2
-    P4 -.->|Phase 3: Domain Modernization| Ship3[Major Milestone]
-```
+Four distinct initiatives, ranging from a low-effort API enhancement to a
+foundational data model change. Effort and blast radius below describe the
+*size and risk of each change*; they are not a schedule, and §6 explains why
+this document gives none.
 
 | Proposal | Primary Module | Effort | Blast Radius | Key Beneficiaries |
 | :--- | :--- | :--- | :--- | :--- |
@@ -331,29 +321,40 @@ Update `EXCAVATION_ANNOUNCEMENT.xsl` to render `journalEntries` in a formatted, 
 
 ---
 
-## 6. Implementation & Contribution Roadmap
+## 6. Contribution sequencing
 
-```mermaid
-gantt
-    title Upstream PR Contribution Roadmap
-    dateFormat  YYYY-MM-DD
-    section Phase 1 (Quick Win)
-    PR 1 - Revision traversal in history API :active, p1, 2026-03-15, 14d
-    section Phase 2 (Data & GIS)
-    PR 2 - WMS-T view in allu-etl :p2, after p1, 14d
-    PR 3 - Spatio-temporal API in external-service :p3, after p1, 21d
-    section Phase 3 (Core Domain)
-    PR 4 - Structured work journal (model, UI, PDF) :p4, after p2, 35d
-```
+**No dates, deliberately.** None of this has been agreed with the upstream
+maintainers, so whether any of it is taken up — and when — is their decision,
+not something this document can schedule.
 
-### Recommended PR Packaging Strategy
+What can be said is the order in which the proposals make sense, which follows
+from how much agreement each needs before code is worth writing:
 
-1. **Submit PR 1 First:**
-   * Contains only `ApplicationHistoryService` and its DTOs.
-   * Minimal lines of code (~150 LOC), completely non-breaking, and easy for City of Helsinki reviewers to approve and merge.
-2. **Submit PR 2 in Parallel:**
-   * Confined strictly to `allu-etl` SQL files.
-   * Can be tested independently in reporting/staging without risk to the production database.
-3. **Engage in Design Review for PR 3 & 4:**
-   * Open a GitHub discussion on `City-of-Helsinki/allu` outlining the `WorkJournalEntry` and spatial API designs before writing frontend/PDF code.
-   * Gather input from city handlers to confirm preferred entry categories and PDF layout requirements.
+1. **Proposal 1 (revision traversal)** is the smallest and most self-contained:
+   one service class and its DTOs, gated behind a flag defaulting to `false`,
+   so existing consumers are unaffected.
+2. **Proposal 3 (temporal validity view)** is confined to `allu-etl` SQL and the
+   `allureport` schema, and can be exercised in reporting or staging without
+   touching the operational database.
+3. **Proposals 2 and 4 (spatio-temporal API, structured work journal)** need
+   design agreement first. Proposal 4 in particular changes the domain model,
+   the UI, and the decision PDF at once, and its entry categories should be
+   confirmed with the handlers who maintain the field today.
+
+### What raising these would actually involve
+
+Checked against the upstream repository on 2026-09-11, because it bears on how a
+proposal should be introduced:
+
+- All 145 pull requests in the repository's history were opened from a branch
+  **inside** the repository, by consultants with write access. No fork-based
+  pull request has ever been submitted.
+- No issue has ever been filed, and GitHub Discussions are disabled.
+- There is no `CONTRIBUTING.md`, issue template, or pull request template.
+
+There is no established route for an outside contribution, and no evidence of
+how one would be received in either direction. An unannounced pull request would
+be the first the maintainers have handled. Establishing contact through the
+channels the city and Forum Virium already share is likely to get further than
+the repository's own tooling, which nobody outside the development team has
+used.
